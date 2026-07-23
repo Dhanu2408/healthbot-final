@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Emergency{% endblock %}
+{% set active_page = 'emergency' %}
+
+{% block topbar_title %}
+<h1>Emergency</h1>
+<span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">First-aid guidance and nearby hospitals</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="emergency-quick-actions">
+  <button type="button" class="btn btn-primary" id="share-location-btn">
+    {{ icon('map-pin', 17) }} Share My Location
+  </button>
+  <a class="btn btn-outline" href="tel:108">
+    {{ icon('phone', 17) }} Call Emergency (108)
+  </a>
+</div>
+
+<div class="carousel-wrap">
+  <div class="carousel-track" id="emergency-track">
+    {% for e in emergencies %}
+    <div class="glass-card emergency-card">
+      <div class="e-icon">{{ icon(e.icon, 22) }}</div>
+      <h3>{{ e.name }}</h3>
+      <ol>{% for step in e.steps %}<li>{{ step }}</li>{% endfor %}</ol>
+      <div class="e-precaution">⚠ {{ e.precautions|join(' · ') }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="emergency-prev" aria-label="Previous">{{ icon('chevron-left', 20) }}</button>
+    <button class="carousel-btn" id="emergency-next" aria-label="Next">{{ icon('chevron-right', 20) }}</button>
+  </div>
+</div>
+
+<div class="section-heading">
+  {{ icon('map-pin', 22) }}
+  <h2 style="margin:0;">Nearby Hospitals</h2>
+</div>
+
+<div class="hospital-grid">
+  {% for h in hospitals %}
+  <div class="glass-card hospital-card">
+    <h4>{{ h.name }}</h4>
+    <div class="h-meta">{{ icon('map-pin', 15) }} {{ h.address }}</div>
+    <div class="h-meta">{{ icon('phone', 15) }} {{ h.phone }}</div>
+    <div class="hospital-actions">
+      <a class="btn btn-outline btn-sm" href="https://www.google.com/maps/search/?api=1&query={{ h.maps_query|urlencode }}" target="_blank" rel="noopener">
+        {{ icon('map-pin', 14) }} Open Maps
+      </a>
+      <a class="btn btn-primary btn-sm" href="tel:{{ h.phone|replace(' ', '') }}">
+        {{ icon('phone', 14) }} Call
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div style="text-align:right;">
+  <a href="{{ url_for('logout_page') }}" class="btn btn-primary">Next {{ icon('chevron-right', 16) }}</a>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/emergency.js') }}"></script>
+{% endblock %}

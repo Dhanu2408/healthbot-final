@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% from "_icons.html" import icon %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}AI-Driven Public Health Chatbot{% endblock %} – Disease Awareness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="skeleton-page" id="page-skeleton">
+  <div class="skeleton-shell">
+    <div class="skeleton-sidebar">
+      <div class="skeleton skeleton-logo"></div>
+      <div class="skeleton skeleton-nav-item"></div>
+      <div class="skeleton skeleton-nav-item"></div>
+      <div class="skeleton skeleton-nav-item"></div>
+      <div class="skeleton skeleton-nav-item"></div>
+      <div class="skeleton skeleton-nav-item"></div>
+    </div>
+    <div class="skeleton-main">
+      <div class="skeleton-topbar">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-actions"></div>
+      </div>
+      <div class="skeleton-cards-row">
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+      </div>
+      <div class="skeleton-block-row">
+        <div class="skeleton skeleton-block"></div>
+        <div class="skeleton skeleton-block"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell">
+  <div class="sidebar-backdrop"></div>
+  <aside class="sidebar">
+    <div class="brand">
+      {{ icon('pulse', 26) }}
+      <span>HealthAI</span>
+    </div>
+    <nav style="display:flex; flex-direction:column; gap:4px;">
+      <a class="nav-link {% if active_page == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
+        {{ icon('activity') }} Dashboard
+      </a>
+      <a class="nav-link {% if active_page == 'chatbot' %}active{% endif %}" href="{{ url_for('chatbot') }}">
+        {{ icon('chat') }} AI Chatbot
+      </a>
+      <a class="nav-link {% if active_page == 'health_tools' %}active{% endif %}" href="{{ url_for('health_tools') }}">
+        {{ icon('stethoscope') }} Health Tools
+      </a>
+      <a class="nav-link {% if active_page == 'emergency' %}active{% endif %}" href="{{ url_for('emergency') }}">
+        {{ icon('alert-triangle') }} Emergency
+      </a>
+      <a class="nav-link {% if active_page == 'profile' %}active{% endif %}" href="{{ url_for('profile') }}">
+        {{ icon('user') }} Profile
+      </a>
+      {% if session.is_admin %}
+      <a class="nav-link {% if active_page == 'admin' %}active{% endif %}" href="{{ url_for('admin_panel') }}">
+        {{ icon('shield-alert') }} Admin Panel
+      </a>
+      {% endif %}
+    </nav>
+    <div class="sidebar-footer">
+      <a class="nav-link" href="{{ url_for('logout_page') }}">
+        {{ icon('log-out') }} Logout
+      </a>
+    </div>
+  </aside>
+
+  <main class="main-content page-fade">
+    <div class="topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="menu-btn" aria-label="Toggle menu">{{ icon('menu') }}</button>
+        <div class="topbar-title">{% block topbar_title %}{% endblock %}</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+          <span class="knob">{{ icon('moon', 12) }}</span>
+        </button>
+        <a href="{{ url_for('profile') }}" class="profile-chip" style="cursor:pointer;">
+          {% if session.profile_photo %}
+          <img class="avatar" style="object-fit:cover;" src="{{ url_for('static', filename='uploads/profile_photos/' + session.profile_photo) }}" alt="Profile photo">
+          {% else %}
+          <div class="avatar">{{ (full_name or "U")[0]|upper }}</div>
+          {% endif %}
+          <span style="font-weight:700; font-size:0.85rem;">{{ full_name }}</span>
+        </a>
+      </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-list">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          <span style="flex:1;">{{ message }}</span>
+          <button type="button" class="flash-close" onclick="this.parentElement.remove()" aria-label="Dismiss">{{ icon('x', 14) }}</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

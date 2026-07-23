@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}My Profile{% endblock %}
+{% set active_page = 'profile' %}
+
+{% block topbar_title %}
+<h1>My Profile</h1>
+<span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Manage your personal details and account security</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-layout">
+  <div class="glass-card profile-photo-card">
+    {% if user.profile_photo %}
+    <img class="profile-photo-preview" id="photo-preview" src="{{ url_for('static', filename='uploads/profile_photos/' + user.profile_photo) }}" alt="Profile photo">
+    {% else %}
+    <div class="profile-photo-preview profile-photo-fallback" id="photo-preview-fallback">{{ (user.full_name or "U")[0]|upper }}</div>
+    {% endif %}
+    <h3 style="margin-top:14px;">{{ user.full_name }}</h3>
+    <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;">{{ user.email }}</span>
+    {% if user.is_admin %}
+    <span class="admin-badge">{{ icon('shield-alert', 13) }} Admin</span>
+    {% endif %}
+  </div>
+
+  <form class="glass-card profile-form" method="POST" action="{{ url_for('profile') }}" enctype="multipart/form-data">
+    <h3 style="margin-bottom:16px;">Personal Details</h3>
+
+    <div class="field">
+      <label for="profile_photo_input">Profile Photo</label>
+      <input type="file" id="profile_photo_input" name="profile_photo" accept="image/png,image/jpeg,image/gif,image/webp">
+    </div>
+
+    <div class="field">
+      <label for="full_name">Full Name</label>
+      <input type="text" id="full_name" name="full_name" value="{{ user.full_name }}" required>
+    </div>
+    <div class="field">
+      <label>Email (cannot be changed)</label>
+      <input type="email" value="{{ user.email }}" disabled style="opacity:0.65;">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="mobile">Mobile Number</label>
+        <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" value="{{ user.mobile }}" required>
+      </div>
+      <div class="field">
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age" min="1" max="119" value="{{ user.age }}" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender" required>
+        <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+        <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+      </select>
+    </div>
+
+    <h3 style="margin: 22px 0 16px;">Change Password <span style="font-weight:600; font-size:0.78rem; color:var(--text-muted);">(optional)</span></h3>
+    <div class="field">
+      <label for="current_password">Current Password</label>
+      <input type="password" id="current_password" name="current_password" placeholder="Required only to change password">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="new_password">New Password</label>
+        <input type="password" id="new_password" name="new_password" placeholder="Min. 6 characters" minlength="6">
+      </div>
+      <div class="field">
+        <label for="confirm_password">Confirm New Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter new password" minlength="6">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ icon('activity', 16) }} Save Changes</button>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% from "_icons.html" import icon %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logout – HealthAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="skeleton-page" id="page-skeleton">
+  <div class="skeleton-auth">
+    <div class="skeleton-auth-shell">
+      <div class="skeleton-auth-visual"></div>
+      <div class="skeleton-auth-panel">
+        <div class="skeleton skeleton-line" style="width:60%; height:22px;"></div>
+        <div class="skeleton skeleton-line" style="width:80%;"></div>
+        <div class="skeleton skeleton-input"></div>
+        <div class="skeleton skeleton-input"></div>
+        <div class="skeleton skeleton-btn"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="logout-wrap page-fade">
+  <div class="glass-card logout-card">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" style="margin: 0 auto 20px;">
+      <span class="knob">{{ icon('moon', 12) }}</span>
+    </button>
+    <div class="logout-icon">{{ icon('log-out', 32) }}</div>
+    <h2>Thank you for using HealthAI</h2>
+    <p>We hope our health guidance was helpful. Are you sure you want to log out?</p>
+
+    <div class="logout-actions">
+      <form method="POST" action="{{ url_for('logout_confirm') }}" style="flex:1;">
+        <button type="submit" class="btn btn-danger btn-block">{{ icon('log-out', 16) }} Logout</button>
+      </form>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-outline btn-block" style="flex:1;">Cancel</a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

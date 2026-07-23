@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Health Tools{% endblock %}
+{% set active_page = 'health_tools' %}
+
+{% block topbar_title %}
+<h1>Health Tools</h1>
+<span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Browse common conditions and how to manage them</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="glass-card bmi-card">
+  <div class="icon-row">{{ icon('activity', 20) }}<h4>BMI Calculator</h4></div>
+  <div class="bmi-grid">
+    <div class="field" style="margin-bottom:0;">
+      <label for="bmi-height">Height (cm)</label>
+      <input type="number" id="bmi-height" placeholder="e.g. 170">
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <label for="bmi-weight">Weight (kg)</label>
+      <input type="number" id="bmi-weight" placeholder="e.g. 65">
+    </div>
+    <button type="button" class="btn btn-primary" id="bmi-calc-btn">Calculate</button>
+  </div>
+  <div class="bmi-result" id="bmi-result">
+    <div>Your BMI: <strong id="bmi-value">--</strong></div>
+    <div class="bmi-category" id="bmi-category-text">--</div>
+  </div>
+</div>
+
+<div class="field health-search">
+  <label for="disease-search">{{ icon('search', 14) }} Search a condition</label>
+  <input type="text" id="disease-search" placeholder="Search e.g. Diabetes, Fever, Asthma...">
+</div>
+
+<div class="carousel-wrap">
+  <div class="carousel-track" id="disease-track">
+    {% for d in diseases %}
+    <div class="glass-card disease-card" data-name="{{ d.name|lower }}">
+      <div class="d-icon">{{ icon(d.icon, 24) }}</div>
+      <h3>{{ d.name }}</h3>
+
+      <div class="d-section">
+        <span class="d-label">Symptoms</span>
+        <ul>{% for s in d.symptoms %}<li>{{ s }}</li>{% endfor %}</ul>
+      </div>
+      <div class="d-section">
+        <span class="d-label">Causes</span>
+        <ul>{% for c in d.causes %}<li>{{ c }}</li>{% endfor %}</ul>
+      </div>
+      <div class="d-section">
+        <span class="d-label">Prevention</span>
+        <ul>{% for p in d.prevention %}<li>{{ p }}</li>{% endfor %}</ul>
+      </div>
+      <div class="d-section">
+        <span class="d-label">Common Medicines</span>
+        <ul>{% for m in d.medicines %}<li>{{ m }}</li>{% endfor %}</ul>
+        <p class="medicine-note">For awareness only — consult a doctor before taking any medicine.</p>
+      </div>
+      <div class="d-section">
+        <span class="d-label">Healthy Food</span>
+        <ul>{% for f in d.food %}<li>{{ f }}</li>{% endfor %}</ul>
+      </div>
+
+      <div class="d-consult">{{ d.consult }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="no-results" id="no-results">No conditions match your search.</div>
+
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="carousel-prev" aria-label="Previous">{{ icon('chevron-left', 20) }}</button>
+    <button class="carousel-btn" id="carousel-next" aria-label="Next">{{ icon('chevron-right', 20) }}</button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/health_tools.js') }}"></script>
+{% endblock %}

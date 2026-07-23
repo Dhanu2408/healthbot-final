@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Dashboard{% endblock %}
+{% set active_page = 'dashboard' %}
+
+{% block topbar_title %}
+<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+  <div class="mini-datetime">
+    {{ icon('calendar', 14) }}
+    <span>{{ now.strftime('%d %b %Y') }} · {{ now.strftime('%I:%M %p') }}</span>
+  </div>
+</div>
+<h1 style="margin-top:6px;">Welcome back, {{ full_name.split(' ')[0] }} 👋</h1>
+<span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Here's your health overview for today</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="grid-cards">
+  <a href="{{ url_for('chatbot') }}" class="glass-card stat-card">
+    <div class="stat-icon">{{ icon('chat', 22) }}</div>
+    <h3>AI Chatbot</h3>
+    <span>Ask health questions anytime</span>
+  </a>
+  <a href="{{ url_for('health_tools') }}" class="glass-card stat-card">
+    <div class="stat-icon">{{ icon('stethoscope', 22) }}</div>
+    <h3>Health Tools</h3>
+    <span>Browse common conditions</span>
+  </a>
+  <a href="{{ url_for('emergency') }}" class="glass-card stat-card">
+    <div class="stat-icon">{{ icon('alert-triangle', 22) }}</div>
+    <h3>Emergency</h3>
+    <span>First-aid & nearby hospitals</span>
+  </a>
+  <a href="{{ url_for('chatbot') }}" class="glass-card stat-card">
+    <div class="stat-icon">{{ icon('clock', 22) }}</div>
+    <h3>Chat History</h3>
+    <span>Review past conversations</span>
+  </a>
+</div>
+
+<div class="info-grid">
+  <div class="glass-card info-card">
+    <div class="icon-row">{{ icon('heart-pulse', 20) }}<h4>Today's Health Tip</h4></div>
+    <p class="big-text">{{ tip }}</p>
+  </div>
+  <div class="glass-card info-card">
+    <div class="icon-row">{{ icon('quote', 20) }}<h4>Health Quote</h4></div>
+    <p class="big-text" style="font-style: italic;">"{{ quote }}"</p>
+  </div>
+</div>
+
+<div class="info-grid">
+  <div class="glass-card reminders-card">
+    <div class="icon-row">{{ icon('clock', 20) }}<h4>Health Reminders</h4></div>
+    <form class="reminder-form" id="reminder-form">
+      <input type="text" id="reminder-input" placeholder="e.g. Drink water at 11 AM" required>
+      <button type="submit" class="btn btn-primary btn-sm">{{ icon('send', 15) }}</button>
+    </form>
+    <div class="reminder-list" id="reminder-list">
+      {% if not reminders %}
+      <div class="reminder-empty" id="reminder-empty">No reminders yet. Add one above.</div>
+      {% else %}
+        {% for r in reminders %}
+        <div class="reminder-item {% if r.is_done %}done{% endif %}" data-id="{{ r.id }}">
+          <input type="checkbox" {% if r.is_done %}checked{% endif %} onchange="toggleReminder({{ r.id }})">
+          <span>{{ r.text }}</span>
+          <button type="button" class="reminder-delete" onclick="deleteReminder({{ r.id }})">{{ icon('trash', 15) }}</button>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="glass-card info-card">
+    <div class="icon-row">{{ icon('calendar', 20) }}<h4>Previous Health Tips</h4></div>
+    <div class="prev-tips-list">
+      {% for pt in previous_tips %}
+      <div class="prev-tip-item">{{ pt }}</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/reminders.js') }}"></script>
+{% endblock %}

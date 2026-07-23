@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Admin Panel{% endblock %}
+{% set active_page = 'admin' %}
+
+{% block topbar_title %}
+<h1>Admin Panel</h1>
+<span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Registered users and platform overview</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-stats">
+  <div class="glass-card stat-card" style="cursor:default;">
+    <div class="stat-icon">{{ icon('user', 22) }}</div>
+    <h3>{{ total_users }}</h3>
+    <span>Registered Users</span>
+  </div>
+  <div class="glass-card stat-card" style="cursor:default;">
+    <div class="stat-icon">{{ icon('chat', 22) }}</div>
+    <h3>{{ total_chats }}</h3>
+    <span>Total Chat Messages</span>
+  </div>
+</div>
+
+<div class="glass-card" style="padding: 24px;">
+  <h3 style="margin-bottom: 16px;">All Users</h3>
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Registered</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.full_name }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.mobile }}</td>
+          <td>{{ u.age }}</td>
+          <td>{{ u.gender }}</td>
+          <td>{{ u.created_at[:10] }}</td>
+          <td>
+            {% if u.is_admin %}
+            <span class="admin-role-badge">{{ icon('shield-alert', 12) }} Admin</span>
+            {% else %}
+            <span style="color:var(--text-muted); font-weight:600;">User</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
